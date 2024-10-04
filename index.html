@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tools Hub</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f7;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+        }
+        .search-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #search-input {
+            width: 70%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .filter-btn {
+            margin: 5px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            background-color: #e0e0e0;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .filter-btn.active {
+            background-color: #0071e3;
+            color: white;
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .tool-card {
+            background-color: #fff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+        .tool-content {
+            padding: 20px;
+        }
+        .tool-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1d1d1f;
+        }
+        .tool-description {
+            font-size: 16px;
+            color: #515154;
+            margin-bottom: 20px;
+        }
+        .tool-link {
+            display: inline-block;
+            background-color: #0071e3;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        .tool-link:hover {
+            background-color: #0077ed;
+        }
+        .tool-label {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Tools Hub</h1>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="AIツールを検索...">
+        </div>
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all">すべて</button>
+            <button class="filter-btn" data-filter="text">テキスト</button>
+            <button class="filter-btn" data-filter="image">画像</button>
+            <button class="filter-btn" data-filter="chat">チャット</button>
+            <button class="filter-btn" data-filter="video">動画</button>
+            <button class="filter-btn" data-filter="other">その他</button>
+        </div>
+        <div class="tool-grid">
+            <div class="tool-card" data-labels="text chat">
+                <div class="tool-content">
+                    <h2 class="tool-name">ChatGPT-4</h2>
+                    <span class="tool-label">テキスト</span>
+                    <span class="tool-label">チャット</span>
+                    <p class="tool-description">文字と画像の同時入力で文章生成が可能な高度なAI。</p>
+                    <a href="https://openai.com/product/gpt-4" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="text">
+                <div class="tool-content">
+                    <h2 class="tool-name">Jetpack AI Assistant</h2>
+                    <span class="tool-label">テキスト</span>
+                    <p class="tool-description">WordPress上でライティング＆構築可能なAIツール。</p>
+                    <a href="https://jetpack.com/blog/introducing-jetpack-ai-assistant/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="text">
+                <div class="tool-content">
+                    <h2 class="tool-name">Rytr</h2>
+                    <span class="tool-label">テキスト</span>
+                    <p class="tool-description">永年無料で高品質コンテンツを数秒で生成。</p>
+                    <a href="https://rytr.me/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="text">
+                <div class="tool-content">
+                    <h2 class="tool-name">Frase.io</h2>
+                    <span class="tool-label">テキスト</span>
+                    <p class="tool-description">高品質のSEO記事を数分で調査、作成、最適化。</p>
+                    <a href="https://frame.io/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="text">
+                <div class="tool-content">
+                    <h2 class="tool-name">Catchy</h2>
+                    <span class="tool-label">テキスト</span>
+                    <p class="tool-description">100種類以上の豊富なツールが魅力のAIライティングアシスタント。</p>
+                    <a href="https://lp.ai-copywriter.jp/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="text">
+                <div class="tool-content">
+                    <h2 class="tool-name">BuzzTai</h2>
+                    <span class="tool-label">テキスト</span>
+                    <p class="tool-description">バズることを目的とした広告コンテンツを生成。</p>
+                    <a href="https://www.buzztai.com/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="text">
+                <div class="tool-content">
+                    <h2 class="tool-name">Creative Drive</h2>
+                    <span class="tool-label">テキスト</span>
+                    <p class="tool-description">誰でも簡単に1/10の時間でSEOライティングができるAI自動記事作成ツール。</p>
+                    <a href="https://creative-drive.jp/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="text">
+                <div class="tool-content">
+                    <h2 class="tool-name">Elyza Pencil</h2>
+                    <span class="tool-label">テキスト</span>
+                    <p class="tool-description">職務経歴書の書き方に悩む人にAIがヒントを提供。</p>
+                    <a href="https://www.pencil.elyza.ai/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="text">
+                <div class="tool-content">
+                    <h2 class="tool-name">Autoblogging.ai</h2>
+                    <span class="tool-label">テキスト</span>
+                    <p class="tool-description">1クリック6,000字前後の自動記事生成【日本語未対応】。</p>
+                    <a href="https://autoblogging.ai/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="text">
+                <div class="tool-content">
+                    <h2 class="tool-name">Jasper AI</h2>
+                    <span class="tool-label">テキスト</span>
+                    <p class="tool-description">文章のトンマナ設定もできる多機能AIライティングツール。</p>
+                    <a href="https://www.jasper.ai/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="text chat">
+                <div class="tool-content">
+                    <h2 class="tool-name">Bing</h2>
+                    <span class="tool-label">テキスト</span>
+                    <span class="tool-label">チャット</span>
+                    <p class="tool-description">検索、ブラウジング、チャットがひとまとめになったAI搭載検索エンジン。</p>
+                    <a href="https://www.bing.com/?cc=jp" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="chat">
+                <div class="tool-content">
+                    <h2 class="tool-name">LINE bot「AIチャットくん」</h2>
+                    <span class="tool-label">チャット</span>
+                    <p class="tool-description">LINEで使えるAIアシスタント。</p>
+                    <a href="https://page.line.me/295aqhjz" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="chat">
+                <div class="tool-content">
+                    <h2 class="tool-name">PrimeAgent</h2>
+                    <span class="tool-label">チャット</span>
+                    <p class="tool-description">疑問解決を支援するAIチャットボット。</p>
+                    <a href="https://www.scsk.jp/product/common/primeagent/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="chat">
+                <div class="tool-content">
+                    <h2 class="tool-name">Enoki</h2>
+                    <span class="tool-label">チャット</span>
+                    <p class="tool-description">チャットボット活用可能なAIプラットフォーム。</p>
+                    <a href="https://www.enoki-inc.co.jp/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="text">
+                <div class="tool-content">
+                    <h2 class="tool-name">Notion AI</h2>
+                    <span class="tool-label">テキスト</span>
+                    <p class="tool-description">社内外向けの文章作成に特化したAIツール。</p>
+                    <a href="https://www.notion.so/ja-jp/product/ai" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="chat">
+                <div class="tool-content">
+                    <h2 class="tool-name">IBM Watson Assistant</h2>
+                    <span class="tool-label">チャット</span>
+                    <p class="tool-description">多様な質問表現でも意図を汲み取るAIチャットボット。</p>
+                    <a href="https://www.ibm.com/jp-ja/watson" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="chat">
+                <div class="tool-content">
+                    <h2 class="tool-name">Karakuri</h2>
+                    <span class="tool-label">チャット</span>
+                    <p class="tool-description">AIチャットボット満足度No.1(IT review)。</p>
+                    <a href="https://karakuri.ai/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="chat">
+                <div class="tool-content">
+                    <h2 class="tool-name">PKSHA Chatbot</h2>
+                    <span class="tool-label">チャット</span>
+                    <p class="tool-description">国内シェアNo.1のAIチャットボット。</p>
+                    <a href="https://aisaas.pkshatech.com/chatbot/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="image">
+                <div class="tool-content">
+                    <h2 class="tool-name">DALL・E 2</h2>
+                    <span class="tool-label">画像</span>
+                    <p class="tool-description">ChatGPTのOpenAIがリリースした画像生成AI。</p>
+                    <a href="https://openai.com/product/dall-e-2" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="image">
+                <div class="tool-content">
+                    <h2 class="tool-name">Canva</h2>
+                    <span class="tool-label">画像</span>
+                    <p class="tool-description">1フレーズで多彩なイメージスタイルの画像を生成。</p>
+                    <a href="https://www.canva.com/ja_jp/features/ai-gazou-seisei/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="image">
+                <div class="tool-content">
+                    <h2 class="tool-name">starryai</h2>
+                    <span class="tool-label">画像</span>
+                    <p class="tool-description">英単語入力でAIが画像を自動生成するアプリ。</p>
+                    <a href="https://starryai.com/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="image">
+                <div class="tool-content">
+                    <h2 class="tool-name">shutterstock</h2>
+                    <span class="tool-label">画像</span>
+                    <p class="tool-description">クオリティの高い画像をキーワードから自動生成。</p>
+                    <a href="https://www.shutterstock.com/ja/generate" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="image">
+                <div class="tool-content">
+                    <h2 class="tool-name">Midjourney</h2>
+                    <span class="tool-label">画像</span>
+                    <p class="tool-description">コマンド入力で自在にオリジナル画像を生成可能。</p>
+                    <a href="https://www.midjourney.com/home/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="image">
+                <div class="tool-content">
+                    <h2 class="tool-name">NovelAI Diffusion</h2>
+                    <span class="tool-label">画像</span>
+                    <p class="tool-description">ファンタジックなイラストが好きな人向けの画像生成AI。</p>
+                    <a href="https://novelai.net/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="image">
+                <div class="tool-content">
+                    <h2 class="tool-name">Stable Diffusion</h2>
+                    <span class="tool-label">画像</span>
+                    <p class="tool-description">オープンソースのAI画像生成プログラム。</p>
+                    <a href="https://ja.stability.ai/stable-diffusion" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="image">
+                <div class="tool-content">
+                    <h2 class="tool-name">niji・journey（にじジャーニー）</h2>
+                    <span class="tool-label">画像</span>
+                    <p class="tool-description">躍動感あるアニメデザインに最適なAI画像生成ツール。</p>
+                    <a href="https://nijijourney.com/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="image">
+                <div class="tool-content">
+                    <h2 class="tool-name">Ideogram AI</h2>
+                    <span class="tool-label">画像</span>
+                    <p class="tool-description">テキストの画像生成AI。</p>
+                    <a href="https://ideogram.ai/login" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="video">
+                <div class="tool-content">
+                    <h2 class="tool-name">Runway Gen-2</h2>
+                    <span class="tool-label">動画</span>
+                    <p class="tool-description">テキストから動画を生成できるマルチモーダルAI。</p>
+                    <a href="https://research.runwayml.com/gen2" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="other">
+                <div class="tool-content">
+                    <h2 class="tool-name">voitra</h2>
+                    <span class="tool-label">その他</span>
+                    <p class="tool-description">音声・動画ファイルのアップロードで簡単文字起こし。</p>
+                    <a href="https://voitra.jp/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="other">
+                <div class="tool-content">
+                    <h2 class="tool-name">Prediction One</h2>
+                    <span class="tool-label">その他</span>
+                    <p class="tool-description">ソニー開発の高精度な企業向けAI予測分析ツール。</p>
+                    <a href="https://predictionone.sony.biz/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="text chat">
+                <div class="tool-content">
+                    <h2 class="tool-name">Perplexity AI</h2>
+                    <span class="tool-label">テキスト</span>
+                    <span class="tool-label">チャット</span>
+                    <p class="tool-description">インターネット検索可能な対話型AI検索エンジン。</p>
+                    <a href="https://www.perplexity.ai/" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="text chat">
+                <div class="tool-content">
+                    <h2 class="tool-name">Poe AI</h2>
+                    <span class="tool-label">テキスト</span>
+                    <span class="tool-label">チャット</span>
+                    <p class="tool-description">様々なAIを使えるプラットフォーム。</p>
+                    <a href="https://poe.com/login" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+            <div class="tool-card" data-labels="chat">
+                <div class="tool-content">
+                    <h2 class="tool-name">ZaPASS AIコーチング</h2>
+                    <span class="tool-label">チャット</span>
+                    <p class="tool-description">内省をサポートするAIチャットボット。</p>
+                    <a href="https://zapass.co/news/2306211000" class="tool-link">詳細を見る</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const searchInput = document.getElementById('search-input');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const toolCards = document.querySelectorAll('.tool-card');
+
+        searchInput.addEventListener('input', filterTools);
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                filterTools();
+            });
+        });
+
+        function filterTools() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+
+            toolCards.forEach(card => {
+                const toolName = card.querySelector('.tool-name').textContent.toLowerCase();
+                const toolDescription = card.querySelector('.tool-description').textContent.toLowerCase();
+                const toolLabels = card.dataset.labels;
+
+                const matchesSearch = toolName.includes(searchTerm) || toolDescription.includes(searchTerm);
+                const matchesFilter = activeFilter === 'all' || toolLabels.includes(activeFilter);
+
+                if (matchesSearch && matchesFilter) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
