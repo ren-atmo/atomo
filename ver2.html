@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tools Hub - AIツールカタログ</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f7;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+        }
+        .search-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #search-input {
+            width: 70%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .filter-btn {
+            margin: 5px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            background-color: #e0e0e0;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .filter-btn.active {
+            background-color: #0071e3;
+            color: white;
+        }
+        .price-filter {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .price-filter label {
+            margin-right: 20px;
+        }
+        .price-range {
+            display: flex;
+            align-items: center;
+        }
+        .price-range input {
+            width: 100px;
+            margin: 0 10px;
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .tool-card {
+            background-color: #fff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+        .tool-content {
+            padding: 20px;
+        }
+        .tool-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1d1d1f;
+        }
+        .tool-description {
+            font-size: 16px;
+            color: #515154;
+            margin-bottom: 20px;
+        }
+        .tool-link {
+            display: inline-block;
+            background-color: #0071e3;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        .tool-link:hover {
+            background-color: #0077ed;
+        }
+        .tool-label {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 10px;
+        }
+        .tool-price {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .free {
+            color: #27ae60;
+        }
+        .paid {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Tools Hub</h1>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="AIツールを検索...">
+        </div>
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all">すべて</button>
+            <button class="filter-btn" data-filter="text">テキスト</button>
+            <button class="filter-btn" data-filter="image">画像</button>
+            <button class="filter-btn" data-filter="chat">チャット</button>
+            <button class="filter-btn" data-filter="video">動画</button>
+            <button class="filter-btn" data-filter="other">その他</button>
+        </div>
+        <div class="price-filter">
+            <label>
+                <input type="checkbox" id="free-filter" checked> 無料
+            </label>
+            <div class="price-range">
+                <span>価格帯:</span>
+                <input type="number" id="min-price" placeholder="最小" min="0">
+                <span>〜</span>
+                <input type="number" id="max-price" placeholder="最大" min="0">
+                <button id="apply-price-filter">適用</button>
+            </div>
+        </div>
+        <div class="tool-grid" id="tool-grid">
+            <!-- AIツールカードがここに動的に追加されます -->
+        </div>
+    </div>
+    <script>
+        const searchInput = document.getElementById('search-input');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const toolGrid = document.getElementById('tool-grid');
+        const freeFilter = document.getElementById('free-filter');
+        const minPriceInput = document.getElementById('min-price');
+        const maxPriceInput = document.getElementById('max-price');
+        const applyPriceFilterButton = document.getElementById('apply-price-filter');
+
+        let aiTools = [];
+
+        async function fetchToolsData() {
+            const sheetId = '1ohhPXcZtnSZVNl5evcnmjD3uXYrkJd2pvrEAGhsOTPI';
+            const sheetName = 'Sheet1';
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const data = JSON.parse(text.substr(47).slice(0, -2));
+
+                aiTools = data.table.rows.map(row => ({
+                    name: row.c[0].v,
+                    description: row.c[1].v,
+                    link: row.c[2].v,
+                    labels: row.c[3].v.split(',').map(label => label.trim()),
+                    annualPrice: parseInt(row.c[4].v) || 0, // 年額料金（数値）
+                    pricingType: parseInt(row.c[4].v) === 0 ? 'free' : 'paid'
+                }));
+
+                displayTools(aiTools);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function formatPrice(price) {
+            return price === 0 ? '無料' : `年額 ${price.toLocaleString()}円`;
+        }
+
+        function displayTools(tools) {
+            toolGrid.innerHTML = '';
+            tools.forEach(tool => {
+                const card = document.createElement('div');
+                card.className = 'tool-card';
+                card.innerHTML = `
+                    <div class="tool-content">
+                        <h2 class="tool-name">${tool.name}</h2>
+                        ${tool.labels.map(label => `<span class="tool-label">${label}</span>`).join('')}
+                        <p class="tool-price ${tool.pricingType}">${formatPrice(tool.annualPrice)}</p>
+                        <p class="tool-description">${tool.description}</p>
+                        <a href="${tool.link}" class="tool-link" target="_blank">詳細を見る</a>
+                    </div>
+                `;
+                toolGrid.appendChild(card);
+            });
+        }
+
+        function filterTools() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+            const showFree = freeFilter.checked;
+            const minPrice = parseInt(minPriceInput.value) || 0;
+            const maxPrice = parseInt(maxPriceInput.value) || Infinity;
+
+            const filteredTools = aiTools.filter(tool => {
+                const matchesSearch = tool.name.toLowerCase().includes(searchTerm) || 
+                                    tool.description.toLowerCase().includes(searchTerm);
+                const matchesFilter = activeFilter === 'all' || tool.labels.includes(activeFilter);
+                const matchesPrice = (showFree && tool.pricingType === 'free') || 
+                                    (tool.pricingType === 'paid' && tool.annualPrice >= minPrice && tool.annualPrice <= maxPrice);
+                return matchesSearch && matchesFilter && matchesPrice;
+            });
+
+            displayTools(filteredTools);
+        }
+
+        searchInput.addEventListener('input', filterTools);
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                filterTools();
+            });
+        });
+        freeFilter.addEventListener('change', filterTools);
+        applyPriceFilterButton.addEventListener('click', filterTools);
+
+        fetchToolsData();
+    </script>
+</body>
+</html>
