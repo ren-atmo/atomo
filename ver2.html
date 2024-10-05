@@ -187,16 +187,33 @@
             try {
                 const response = await fetch(url);
                 const text = await response.text();
+                console.log('Raw response:', text);
                 const data = JSON.parse(text.substr(47).slice(0, -2));
+                console.log('Parsed data:', data);
 
-                aiTools = data.table.rows.map(row => ({
-                    name: row.c[0].v,
-                    description: row.c[1].v,
-                    link: row.c[2].v,
-                    labels: row.c[3].v.split(',').map(label => label.trim()),
-                    annualPrice: parseInt(row.c[4].v) || 0, // 年額料金（数値）
-                    pricingType: parseInt(row.c[4].v) === 0 ? 'free' : 'paid'
-                }));
+                if (!data.table || !data.table.rows) {
+                    console.error('Unexpected data structure:', data);
+                    return;
+                }
+
+                aiTools = data.table.rows.slice(1).map(row => {
+                    const tool = {
+                        name: row.c[0]?.v || '',
+                        description: row.c[1]?.v || '',
+                        link: row.c[2]?.v || '',
+                        labels: (row.c[3]?.v || '').split(',').map(label => label.trim()),
+                        annualPrice: parseInt(row.c[4]?.v) || 0,
+                    };
+                    tool.pricingType = tool.annualPrice === 0 ? 'free' : 'paid';
+                    console.log('Processed tool:', tool);
+                    return tool;
+                }).filter(tool => tool.name);
+
+                console.log('aiTools before display:', aiTools);
+
+                if (aiTools.length === 0) {
+                    console.warn('No tools found in the spreadsheet data');
+                }
 
                 displayTools(aiTools);
             } catch (error) {
@@ -208,41 +225,22 @@
             return price === 0 ? '無料' : `年額 ${price.toLocaleString()}円`;
         }
 
-        async function fetchToolsData() {
-            const sheetId = '1ohhPXcZtnSZVNl5evcnmjD3uXYrkJd2pvrEAGhsOTPI';
-            const sheetName = 'Sheet1';
-            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
-        
-            try {
-                const response = await fetch(url);
-                const text = await response.text();
-                console.log('Raw response:', text);  // 生のレスポンスを確認
-                const data = JSON.parse(text.substr(47).slice(0, -2));
-                console.log('Parsed data:', data);  // パースされたデータを確認
-        
-                if (!data.table || !data.table.rows) {
-                    console.error('Unexpected data structure:', data);
-                    return;
-                }
-        
-                aiTools = data.table.rows.slice(1).map(row => {
-                    const tool = {
-                        name: row.c[0]?.v || '',
-                        description: row.c[1]?.v || '',
-                        link: row.c[2]?.v || '',
-                        labels: (row.c[3]?.v || '').split(',').map(label => label.trim()),
-                        annualPrice: parseInt(row.c[4]?.v) || 0,
-                    };
-                    tool.pricingType = tool.annualPrice === 0 ? 'free' : 'paid';
-                    console.log('Processed tool:', tool);  // 各ツールの処理結果を確認
-                    return tool;
-                }).filter(tool => tool.name);
-        
-                console.log('Final aiTools array:', aiTools);  // 最終的な aiTools 配列を確認
-                displayTools(aiTools);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
+        function displayTools(tools) {
+            toolGrid.innerHTML = '';
+            tools.forEach(tool => {
+                const card = document.createElement('div');
+                card.className = 'tool-card';
+                card.innerHTML = `
+                    <div class="tool-content">
+                        <h2 class="tool-name">${tool.name}</h2>
+                        ${tool.labels.map(label => `<span class="tool-label">${label}</span>`).join('')}
+                        <p class="tool-price ${tool.pricingType}">${formatPrice(tool.annualPrice)}</p>
+                        <p class="tool-description">${tool.description}</p>
+                        <a href="${tool.link}" class="tool-link" target="_blank">詳細を見る</a>
+                    </div>
+                `;
+                toolGrid.appendChild(card);
+            });
         }
 
         function filterTools() {
@@ -254,10 +252,10 @@
 
             const filteredTools = aiTools.filter(tool => {
                 const matchesSearch = tool.name.toLowerCase().includes(searchTerm) || 
-                                    tool.description.toLowerCase().includes(searchTerm);
+                                      tool.description.toLowerCase().includes(searchTerm);
                 const matchesFilter = activeFilter === 'all' || tool.labels.includes(activeFilter);
                 const matchesPrice = (showFree && tool.pricingType === 'free') || 
-                                    (tool.pricingType === 'paid' && tool.annualPrice >= minPrice && tool.annualPrice <= maxPrice);
+                                     (tool.pricingType === 'paid' && tool.annualPrice >= minPrice && tool.annualPrice <= maxPrice);
                 return matchesSearch && matchesFilter && matchesPrice;
             });
 
@@ -275,7 +273,9 @@
         freeFilter.addEventListener('change', filterTools);
         applyPriceFilterButton.addEventListener('click', filterTools);
 
-        fetchToolsData();
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchToolsData();
+        });
     </script>
 </body>
 </html>
