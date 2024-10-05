@@ -208,22 +208,29 @@
             return price === 0 ? '無料' : `年額 ${price.toLocaleString()}円`;
         }
 
-        function displayTools(tools) {
-            toolGrid.innerHTML = '';
-            tools.forEach(tool => {
-                const card = document.createElement('div');
-                card.className = 'tool-card';
-                card.innerHTML = `
-                    <div class="tool-content">
-                        <h2 class="tool-name">${tool.name}</h2>
-                        ${tool.labels.map(label => `<span class="tool-label">${label}</span>`).join('')}
-                        <p class="tool-price ${tool.pricingType}">${formatPrice(tool.annualPrice)}</p>
-                        <p class="tool-description">${tool.description}</p>
-                        <a href="${tool.link}" class="tool-link" target="_blank">詳細を見る</a>
-                    </div>
-                `;
-                toolGrid.appendChild(card);
-            });
+        async function fetchToolsData() {
+            const sheetId = '1ohhPXcZtnSZVNl5evcnmjD3uXYrkJd2pvrEAGhsOTPI';
+            const sheetName = 'Sheet1';
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+        
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const data = JSON.parse(text.substr(47).slice(0, -2));
+        
+                aiTools = data.table.rows.slice(1).map(row => ({
+                    name: row.c[0]?.v || '',
+                    description: row.c[1]?.v || '',
+                    link: row.c[2]?.v || '',
+                    labels: (row.c[3]?.v || '').split(',').map(label => label.trim()),
+                    annualPrice: parseInt(row.c[4]?.v) || 0,
+                    pricingType: (parseInt(row.c[4]?.v) || 0) === 0 ? 'free' : 'paid'
+                })).filter(tool => tool.name); // 名前が空の行を除外
+        
+                displayTools(aiTools);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         }
 
         function filterTools() {
